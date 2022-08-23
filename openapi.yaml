@@ -23,6 +23,10 @@ components:
     schemas:
         api.apiecho.v1.HeaderReply:
             type: object
-            properties: {}
+            properties:
+                headers:
+                    type: object
+                    additionalProperties:
+                        type: string
 tags:
     - name: Myna

@@ -20,4 +20,6 @@ service Myna {
 
 message HeaderRequest {}
 
-message HeaderReply {}
+message HeaderReply {
+   map<string,string> headers = 1;
+}
