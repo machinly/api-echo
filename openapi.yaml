@@ -1,0 +1,28 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: Myna API
+    version: 0.0.1
+paths:
+    /v1/header:
+        get:
+            tags:
+                - Myna
+            description: Sends a greeting
+            operationId: Myna_Header
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.apiecho.v1.HeaderReply'
+components:
+    schemas:
+        api.apiecho.v1.HeaderReply:
+            type: object
+            properties: {}
+tags:
+    - name: Myna
