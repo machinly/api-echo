@@ -27,6 +27,6 @@ func NewHTTPServer(c *conf.Server, myna *service.MynaService, logger log.Logger)
 		opts = append(opts, http.Timeout(c.Http.Timeout.AsDuration()))
 	}
 	srv := http.NewServer(opts...)
-	v1.RegisterGreeterHTTPServer(srv, myna)
+	v1.RegisterMynaHTTPServer(srv, myna)
 	return srv
 }
