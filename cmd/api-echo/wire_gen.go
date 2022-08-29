@@ -18,7 +18,7 @@ import (
 
 // wireApp init kratos application.
 func wireApp(confServer *conf.Server, data *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
-	mynaService := service.NewMynaService()
+	mynaService := service.NewMynaService(logger)
 	grpcServer := server.NewGRPCServer(confServer, mynaService, logger)
 	httpServer := server.NewHTTPServer(confServer, mynaService, logger)
 	app := newApp(logger, grpcServer, httpServer)

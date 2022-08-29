@@ -19,15 +19,18 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
+const OperationMynaFillData = "/api.apiecho.v1.Myna/FillData"
 const OperationMynaHeader = "/api.apiecho.v1.Myna/Header"
 
 type MynaHTTPServer interface {
+	FillData(context.Context, *FillDataRequest) (*FillDataReply, error)
 	Header(context.Context, *HeaderRequest) (*HeaderReply, error)
 }
 
 func RegisterMynaHTTPServer(s *http.Server, srv MynaHTTPServer) {
 	r := s.Route("/")
 	r.GET("/v1/header", _Myna_Header0_HTTP_Handler(srv))
+	r.POST("/v1/filldata", _Myna_FillData0_HTTP_Handler(srv))
 }
 
 func _Myna_Header0_HTTP_Handler(srv MynaHTTPServer) func(ctx http.Context) error {
@@ -49,7 +52,27 @@ func _Myna_Header0_HTTP_Handler(srv MynaHTTPServer) func(ctx http.Context) error
 	}
 }
 
+func _Myna_FillData0_HTTP_Handler(srv MynaHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in FillDataRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationMynaFillData)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.FillData(ctx, req.(*FillDataRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*FillDataReply)
+		return ctx.Result(200, reply)
+	}
+}
+
 type MynaHTTPClient interface {
+	FillData(ctx context.Context, req *FillDataRequest, opts ...http.CallOption) (rsp *FillDataReply, err error)
 	Header(ctx context.Context, req *HeaderRequest, opts ...http.CallOption) (rsp *HeaderReply, err error)
 }
 
@@ -59,6 +82,19 @@ type MynaHTTPClientImpl struct {
 
 func NewMynaHTTPClient(client *http.Client) MynaHTTPClient {
 	return &MynaHTTPClientImpl{client}
+}
+
+func (c *MynaHTTPClientImpl) FillData(ctx context.Context, in *FillDataRequest, opts ...http.CallOption) (*FillDataReply, error) {
+	var out FillDataReply
+	pattern := "/v1/filldata"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationMynaFillData))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
 }
 
 func (c *MynaHTTPClientImpl) Header(ctx context.Context, in *HeaderRequest, opts ...http.CallOption) (*HeaderReply, error) {

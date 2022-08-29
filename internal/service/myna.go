@@ -5,15 +5,18 @@ import (
 
 	pb "api-echo/api/apiecho/v1"
 
+	"github.com/go-kratos/kratos/v2/log"
+
 	"github.com/go-kratos/kratos/v2/transport"
 )
 
 type MynaService struct {
 	pb.UnimplementedMynaServer
+	log *log.Helper
 }
 
-func NewMynaService() *MynaService {
-	return &MynaService{}
+func NewMynaService(logger log.Logger) *MynaService {
+	return &MynaService{log: log.NewHelper(logger)}
 }
 
 func (s *MynaService) Header(ctx context.Context, req *pb.HeaderRequest) (*pb.HeaderReply, error) {
@@ -27,4 +30,14 @@ func (s *MynaService) Header(ctx context.Context, req *pb.HeaderRequest) (*pb.He
 	return &pb.HeaderReply{
 		Headers: headerSet,
 	}, nil
+}
+
+func (s *MynaService) FillData(ctx context.Context, req *pb.FillDataRequest) (*pb.FillDataReply, error) {
+	s.log.Debug(req.GetCount(), req.GetContent())
+	set := map[int]string{}
+	for i := range make([]any, int(req.GetCount())) {
+		s.log.Debug(i)
+		set[i] = req.GetContent()
+	}
+	return &pb.FillDataReply{}, nil
 }

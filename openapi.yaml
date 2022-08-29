@@ -6,11 +6,30 @@ info:
     title: Myna API
     version: 0.0.1
 paths:
+    /v1/filldata:
+        post:
+            tags:
+                - Myna
+            description: FillData
+            operationId: Myna_FillData
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.apiecho.v1.FillDataRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.apiecho.v1.FillDataReply'
     /v1/header:
         get:
             tags:
                 - Myna
-            description: Sends a greeting
+            description: Get Header from request
             operationId: Myna_Header
             responses:
                 "200":
@@ -21,6 +40,17 @@ paths:
                                 $ref: '#/components/schemas/api.apiecho.v1.HeaderReply'
 components:
     schemas:
+        api.apiecho.v1.FillDataReply:
+            type: object
+            properties: {}
+        api.apiecho.v1.FillDataRequest:
+            type: object
+            properties:
+                count:
+                    type: integer
+                    format: int32
+                content:
+                    type: string
         api.apiecho.v1.HeaderReply:
             type: object
             properties:

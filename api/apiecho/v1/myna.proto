@@ -9,12 +9,21 @@ option java_multiple_files = true;
 option java_package = "api.apiecho.v1";
 
 service Myna {
-  // Sends a greeting
+  // Get Header from request 
   rpc Header (HeaderRequest) returns (HeaderReply) {
     option (google.api.http) = {
       get: "/v1/header"
     };
   }
+
+  // FillData 
+  rpc FillData (FillDataRequest) returns (FillDataReply) {
+    option (google.api.http) = {
+      post: "/v1/filldata"
+      body: "*"
+    };
+  }
+
 
 }
 
@@ -23,3 +32,10 @@ message HeaderRequest {}
 message HeaderReply {
    map<string,string> headers = 1;
 }
+
+message FillDataRequest {
+   int32  count = 1;
+   string content = 2;
+}
+
+message FillDataReply {}
