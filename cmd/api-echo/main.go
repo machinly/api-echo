@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"api-echo/internal/conf"
+
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
@@ -22,12 +23,15 @@ var (
 	Version string
 	// flagconf is the config flag.
 	flagconf string
+	// flaghttp is the http flag
+	flaghttp string
 
 	id, _ = os.Hostname()
 )
 
 func init() {
 	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
+	flag.StringVar(&flaghttp, "http", "0.0.0.0:8080", "http listen address, eg: -http 0.0.0.0:8080")
 }
 
 func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
@@ -70,6 +74,8 @@ func main() {
 	if err := c.Scan(&bc); err != nil {
 		panic(err)
 	}
+
+	bc.Server.Http.Addr = flaghttp
 
 	app, cleanup, err := wireApp(bc.Server, bc.Data, logger)
 	if err != nil {
