@@ -41,3 +41,7 @@ func (s *MynaService) FillData(ctx context.Context, req *pb.FillDataRequest) (*p
 	}
 	return &pb.FillDataReply{}, nil
 }
+
+func (s *MynaService) Status(ctx context.Context, req *pb.StatusRequest) (*pb.StatusReply, error) {
+	return &pb.StatusReply{}, nil
+}

@@ -38,6 +38,19 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.apiecho.v1.HeaderReply'
+    /v1/status:
+        get:
+            tags:
+                - Myna
+            description: Status
+            operationId: Myna_Status
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.apiecho.v1.StatusReply'
 components:
     schemas:
         api.apiecho.v1.FillDataReply:
@@ -58,5 +71,8 @@ components:
                     type: object
                     additionalProperties:
                         type: string
+        api.apiecho.v1.StatusReply:
+            type: object
+            properties: {}
 tags:
     - name: Myna

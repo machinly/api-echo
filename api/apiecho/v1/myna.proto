@@ -24,6 +24,13 @@ service Myna {
     };
   }
 
+  // Status
+  rpc Status (StatusRequest) returns (StatusReply) {
+    option (google.api.http) = {
+      get: "/v1/status"
+    };
+  }
+
 
 }
 
@@ -39,3 +46,8 @@ message FillDataRequest {
 }
 
 message FillDataReply {}
+
+message StatusRequest {}
+
+message StatusReply {}
+
