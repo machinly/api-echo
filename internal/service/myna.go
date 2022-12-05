@@ -43,10 +43,8 @@ func (s *MynaService) FillData(ctx context.Context, req *pb.FillDataRequest) (*p
 }
 
 func (s *MynaService) GetData(ctx context.Context, req *pb.GetDataRequest) (*pb.GetDataReply, error) {
-	s.log.Debug(req.GetCount(), req.GetContent())
 	set := make([]string, req.GetCount())
 	for i := range set {
-		s.log.Debug(i)
 		set[i] = req.GetContent()
 	}
 	return &pb.GetDataReply{
