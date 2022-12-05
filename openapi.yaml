@@ -25,6 +25,25 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.apiecho.v1.FillDataReply'
+    /v1/getdata:
+        post:
+            tags:
+                - Myna
+            description: GetData
+            operationId: Myna_GetData
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.apiecho.v1.GetDataRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.apiecho.v1.GetDataReply'
     /v1/header:
         get:
             tags:
@@ -57,6 +76,21 @@ components:
             type: object
             properties: {}
         api.apiecho.v1.FillDataRequest:
+            type: object
+            properties:
+                count:
+                    type: integer
+                    format: int32
+                content:
+                    type: string
+        api.apiecho.v1.GetDataReply:
+            type: object
+            properties:
+                contents:
+                    type: array
+                    items:
+                        type: string
+        api.apiecho.v1.GetDataRequest:
             type: object
             properties:
                 count:

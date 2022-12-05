@@ -42,6 +42,19 @@ func (s *MynaService) FillData(ctx context.Context, req *pb.FillDataRequest) (*p
 	return &pb.FillDataReply{}, nil
 }
 
+func (s *MynaService) GetData(ctx context.Context, req *pb.GetDataRequest) (*pb.GetDataReply, error) {
+	s.log.Debug(req.GetCount(), req.GetContent())
+	set := make([]string, req.GetCount())
+	for i := range set {
+		s.log.Debug(i)
+		set[i] = req.GetContent()
+	}
+	return &pb.GetDataReply{
+		Contents: set,
+	}, nil
+
+}
+
 func (s *MynaService) Status(ctx context.Context, req *pb.StatusRequest) (*pb.StatusReply, error) {
 	return &pb.StatusReply{}, nil
 }

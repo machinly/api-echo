@@ -20,11 +20,13 @@ var _ = binding.EncodeURL
 const _ = http.SupportPackageIsVersion1
 
 const OperationMynaFillData = "/api.apiecho.v1.Myna/FillData"
+const OperationMynaGetData = "/api.apiecho.v1.Myna/GetData"
 const OperationMynaHeader = "/api.apiecho.v1.Myna/Header"
 const OperationMynaStatus = "/api.apiecho.v1.Myna/Status"
 
 type MynaHTTPServer interface {
 	FillData(context.Context, *FillDataRequest) (*FillDataReply, error)
+	GetData(context.Context, *GetDataRequest) (*GetDataReply, error)
 	Header(context.Context, *HeaderRequest) (*HeaderReply, error)
 	Status(context.Context, *StatusRequest) (*StatusReply, error)
 }
@@ -33,6 +35,7 @@ func RegisterMynaHTTPServer(s *http.Server, srv MynaHTTPServer) {
 	r := s.Route("/")
 	r.GET("/v1/header", _Myna_Header0_HTTP_Handler(srv))
 	r.POST("/v1/filldata", _Myna_FillData0_HTTP_Handler(srv))
+	r.POST("/v1/getdata", _Myna_GetData0_HTTP_Handler(srv))
 	r.GET("/v1/status", _Myna_Status0_HTTP_Handler(srv))
 }
 
@@ -74,6 +77,25 @@ func _Myna_FillData0_HTTP_Handler(srv MynaHTTPServer) func(ctx http.Context) err
 	}
 }
 
+func _Myna_GetData0_HTTP_Handler(srv MynaHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetDataRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationMynaGetData)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetData(ctx, req.(*GetDataRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetDataReply)
+		return ctx.Result(200, reply)
+	}
+}
+
 func _Myna_Status0_HTTP_Handler(srv MynaHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in StatusRequest
@@ -95,6 +117,7 @@ func _Myna_Status0_HTTP_Handler(srv MynaHTTPServer) func(ctx http.Context) error
 
 type MynaHTTPClient interface {
 	FillData(ctx context.Context, req *FillDataRequest, opts ...http.CallOption) (rsp *FillDataReply, err error)
+	GetData(ctx context.Context, req *GetDataRequest, opts ...http.CallOption) (rsp *GetDataReply, err error)
 	Header(ctx context.Context, req *HeaderRequest, opts ...http.CallOption) (rsp *HeaderReply, err error)
 	Status(ctx context.Context, req *StatusRequest, opts ...http.CallOption) (rsp *StatusReply, err error)
 }
@@ -112,6 +135,19 @@ func (c *MynaHTTPClientImpl) FillData(ctx context.Context, in *FillDataRequest, 
 	pattern := "/v1/filldata"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationMynaFillData))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *MynaHTTPClientImpl) GetData(ctx context.Context, in *GetDataRequest, opts ...http.CallOption) (*GetDataReply, error) {
+	var out GetDataReply
+	pattern := "/v1/getdata"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationMynaGetData))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {

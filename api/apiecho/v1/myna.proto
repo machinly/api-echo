@@ -24,6 +24,14 @@ service Myna {
     };
   }
 
+  // GetData 
+  rpc GetData (GetDataRequest) returns (GetDataReply) {
+    option (google.api.http) = {
+      post: "/v1/getdata"
+      body: "*"
+    };
+  }
+
   // Status
   rpc Status (StatusRequest) returns (StatusReply) {
     option (google.api.http) = {
@@ -46,6 +54,17 @@ message FillDataRequest {
 }
 
 message FillDataReply {}
+
+message GetDataRequest {
+   int32  count = 1;
+   string content = 2;
+}
+
+message GetDataReply {
+   repeated string contents = 1;
+}
+
+
 
 message StatusRequest {}
 

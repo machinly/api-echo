@@ -26,6 +26,8 @@ type MynaClient interface {
 	Header(ctx context.Context, in *HeaderRequest, opts ...grpc.CallOption) (*HeaderReply, error)
 	// FillData
 	FillData(ctx context.Context, in *FillDataRequest, opts ...grpc.CallOption) (*FillDataReply, error)
+	// GetData
+	GetData(ctx context.Context, in *GetDataRequest, opts ...grpc.CallOption) (*GetDataReply, error)
 	// Status
 	Status(ctx context.Context, in *StatusRequest, opts ...grpc.CallOption) (*StatusReply, error)
 }
@@ -56,6 +58,15 @@ func (c *mynaClient) FillData(ctx context.Context, in *FillDataRequest, opts ...
 	return out, nil
 }
 
+func (c *mynaClient) GetData(ctx context.Context, in *GetDataRequest, opts ...grpc.CallOption) (*GetDataReply, error) {
+	out := new(GetDataReply)
+	err := c.cc.Invoke(ctx, "/api.apiecho.v1.Myna/GetData", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *mynaClient) Status(ctx context.Context, in *StatusRequest, opts ...grpc.CallOption) (*StatusReply, error) {
 	out := new(StatusReply)
 	err := c.cc.Invoke(ctx, "/api.apiecho.v1.Myna/Status", in, out, opts...)
@@ -73,6 +84,8 @@ type MynaServer interface {
 	Header(context.Context, *HeaderRequest) (*HeaderReply, error)
 	// FillData
 	FillData(context.Context, *FillDataRequest) (*FillDataReply, error)
+	// GetData
+	GetData(context.Context, *GetDataRequest) (*GetDataReply, error)
 	// Status
 	Status(context.Context, *StatusRequest) (*StatusReply, error)
 	mustEmbedUnimplementedMynaServer()
@@ -87,6 +100,9 @@ func (UnimplementedMynaServer) Header(context.Context, *HeaderRequest) (*HeaderR
 }
 func (UnimplementedMynaServer) FillData(context.Context, *FillDataRequest) (*FillDataReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FillData not implemented")
+}
+func (UnimplementedMynaServer) GetData(context.Context, *GetDataRequest) (*GetDataReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetData not implemented")
 }
 func (UnimplementedMynaServer) Status(context.Context, *StatusRequest) (*StatusReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Status not implemented")
@@ -140,6 +156,24 @@ func _Myna_FillData_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Myna_GetData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetDataRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MynaServer).GetData(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.apiecho.v1.Myna/GetData",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MynaServer).GetData(ctx, req.(*GetDataRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Myna_Status_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(StatusRequest)
 	if err := dec(in); err != nil {
@@ -172,6 +206,10 @@ var Myna_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FillData",
 			Handler:    _Myna_FillData_Handler,
+		},
+		{
+			MethodName: "GetData",
+			Handler:    _Myna_GetData_Handler,
 		},
 		{
 			MethodName: "Status",
